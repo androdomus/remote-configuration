@@ -1,0 +1,15 @@
+
+vlan 100
+name OK
+int vl 100
+ip add 100.100.100.100 255.255.255.0
+do wr
+
+vlan 101
+name ko
+int vl 101
+ip add 101.101.101.101 255.255.255.0
+do wr
+
+
+
