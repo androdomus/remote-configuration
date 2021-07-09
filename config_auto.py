@@ -34,28 +34,28 @@ def get_infos():
     nbresw_answer = input("\nCombien de machines à enregistrer? >>>>>")
     
     try:
-        i = int(nbresw_answer)          #Test si la réponse déclarée en variable est un chiffre
+        i = int(nbresw_answer)          #Test si la réponse déclarée en variable est un chiffre.
     except (ValueError) as error:
-        logging.warning(error) 
-        print('Valeur incorrecte...Indiquez un nombre entier.\nRetour au menu d\'Enregistrement\n') #Affiche l'erreur et renvoie au début de l'intéraction    
-        get_infos()
+        logging.warning(error) 		#Envoi de l'erreur dans le fichier de log.
+        print('Valeur incorrecte...Indiquez un nombre entier.\nRetour au menu d\'Enregistrement\n') #Affiche le message.    
+        get_infos()			#Relance la fonction 	
         
-    for i in range(0,i):                #Boucle délimité par la variable nbresw_answer enregistrant les appareils enregistrés
-        if int(nbresw_answer) > 1 and len(list_devices) >= 1  :  # si il n'y a q'un appareil le message suivant n'est pas affiché
+    for i in range(0,i):                #La boucle délimitée par la variable nbresw_answer enregistre les machines dans une liste.
+        if int(nbresw_answer) > 1 and len(list_devices) >= 1  :  #Si il n'y a q'une machine, le message n'est pas affiché.
             print("\nEnregistrement informations de la machine suivante\n")
 
-        global device_name               #Déclaration en variable global afin de pouvoir l'utiliser hors de la fonction 
-        device_name = input("""\nIndiquez le nom de la machine: >>>>>""") #Récupération des données néccessaire à la connexion par intéraction
-        list_devices.append(device_name)                #Ajout du nom de l'appareil à chaque tour de boucle
-        answer_ip = input("""\nIndiquez l\'addresse IP de l\'équipement sans son masque: >>>>>""")
-        answer_username = input("""\nIndiquez le nom de l\'utilisateur: >>>>>""")
-        print("""\nIndiquez le mot de passe pour la connexion SSH ainsi que celui du mode privilégié:""",)
+        global device_name               #Déclaration en variable global afin de pouvoir l'utiliser hors de la fonction. 
+        device_name = input("""\nIndiquez le nom de la machine: >>>>>""") 				    #Les des données néccessaire
+        list_devices.append(device_name)       #Ajout du nom de l'appareil à chaque tour de boucle	    # à la connexion distante des machines
+        answer_ip = input("""\nIndiquez l\'addresse IP de l\'équipement sans son masque: >>>>>""")	    # sont déclarées dans les variables,   
+        answer_username = input("""\nIndiquez le nom de l\'utilisateur: >>>>>""")			    #par l'intéractivité entre le script	
+        print("""\nIndiquez le mot de passe pour la connexion SSH ainsi que celui du mode privilégié:""",)  #et l'utilisateur.
         answer_mdp = getpass() #Cache le mot de passe indiqué par l'utilisateur
 	
-        file_json = device_name + "_connexion.json" #Variable distinguant les équipements afin de creer leur fichier JSON de connexion 
-        device_dictionnary = device_name + "_dictionnary" #Variable distinguant les dictionnaires regroupant les données des équipements
+        file_json = device_name + "_connexion.json"       #Variable distinguant les machines afin de creer leur fichier JSON de connexion. 
+        device_dictionnary = device_name + "_dictionnary" #Variable distinguant les dictionnaires regroupant les données des machines.
     
-        #Création d'un dictionnaire contenant les infos de connexion de chaque device
+        #Création du dictionnaire contenant les infos de connexion de chaque machine.
         device_dictionnary = {
         "host": answer_ip,
         "username": answer_username,
@@ -64,59 +64,54 @@ def get_infos():
         "device_type": "cisco_ios",
         }
         try:
-            net_connect = ConnectHandler(**device_dictionnary)
-            all_device_dict.append(device_dictionnary) #Ajout d'un dictionnaire à chaque tour de boucle    
+            net_connect = ConnectHandler(**device_dictionnary)  #Teste si la connexion en SSH est possible.
+            all_device_dict.append(device_dictionnary) 		#Ajoute le dictionnaire à la liste à chaque tour de boucle.    
             
-            use_json(file_json, device_dictionnary)
-        except (NetmikoTimeoutException, SSHException, NameError, ValueError) as error:
-            logging.warning(error)
+            use_json(file_json, device_dictionnary)		#Enregistre le dictionnaire de la machine dans une fichier JSON.  
+        except (NetmikoTimeoutException, SSHException, NameError, ValueError) as error:		#Récupération de l'erreur,
+            logging.warning(error)								#et envoi dans le fichier log.	
             print("Connexion impossible, vérifiez vos informations de connexion... Retour à l'enregistrement des informations.")
-            get_infos()
+            get_infos()						
 
-        #Enregistrement du fichier json listant tous les appareils         
-        if int(nbresw_answer) == len(list_devices): # Enregistrement effectué si le nombre de device à enregistrer = au nombre d'élément dans la liste
-            try:                                    #Test l'existence de la liste d'appareil
-               
-        #use_json("list_devices.json", list_devices) #Lance la fonction et avec les paramètres lit et/ou écrit les données
-        #list_devices.extend(r_data)                 # Ajoute le contenu de la variable dans la liste de machine                                                 
-                tf = open("list_devices.json", "r")     #Recharge la liste des machines modifiées,
-                                          # pour l'injecter dans le fichier JSON de la liste existante
-                device = json.load(tf)
-                list_devices.extend(device)
-                tf = open("list_devices.json", "w")
-                json.dump(list_devices,tf) 
-                tf.close()                
-            except (FileNotFoundError, NameError) as error: #Permet de poursuivre le script 
-                use_json("list_devices.json", list_devices) #en lancant la fonction et ses paramètres   
-                logging.warning(error)
+        #Enregistrement du fichier JSON listant tous les appareils.         
+        if int(nbresw_answer) == len(list_devices): 	#Si le nombre machine à enregistrer = nombre d'objets de la liste de machine,
+            try:                                    	#Les tests suivants sont effectués: 		                                                    
+                tf = open("list_devices.json", "r")     #-Ouverture (en mode lecture) de la liste des machines existantes.                                 
+                device = json.load(tf)			#-Chargement de la liste dans la variable device.
+                list_devices.extend(device)		#-Ajoute dans list_devices les machines de la liste devices.
+                tf = open("list_devices.json", "w")	#-Ouverture (en mode édition) de la liste des machines.
+                json.dump(list_devices,tf) 		#-Enregistrement de la liste modifiée dans le fichier JSON.
+                tf.close()                		#-Fermeture du fichier 
+            except (FileNotFoundError, NameError) as error: 	#En cas d'erreurs:
+                use_json("list_devices.json", list_devices) 	#-Lancement de la fonction simple avec les paramètres définis.   
+                logging.warning(error)				#-Envoi de l'erreur dans le fichier log
 
-    for device_dictionnary in all_device_dict:     #Boucle initialisant la connexion avec les données                                                     
-        connexion(r_data = device_dictionnary) #de chaque dictionnaire de la liste
+    for device_dictionnary in all_device_dict:     #Pour chaque dictionnaire de la liste:                                                     
+        connexion(r_data = device_dictionnary) 	   #Lancement de la fonction pour afficher la conexion distante réalisée.
                     
 def get_config():
-                          ##Fonction permettant par l'intéractivité la collecte de données néccéssaires à  
-                          ##la mise en place des configurations sur les machines. L'utilisateur peut choisir 
-                          ## de quitter le script  ou d'être redirigé vers la partie enregistrement.
+                          ##Fonction permettant par l'intéractivité la collecte des commandes néccéssaires à  
+                          ##la mise en place des configurations sur les machines distantes. L'utilisateur peut choisir 
+                          ##aussi  de quitter le script  ou d'être redirigé vers la partie enregistrement.
 
      print ('\n########## 2ème partie:Configuration à mettre en place###########\nRecherche des machines enregistrées...\n')
 
-     try:                                       #Permet la poursuite du script
-        tf = open("list_devices.json", "r")     #test d'ouverture du fichier JSON contenant la liste des machines,
-        devices = json.load(tf)                 #et chargement du contenu du fichier dans une variable pour l'afficher.
+     try:                                       #Les tests suivants sont effectués:
+        tf = open("list_devices.json", "r")     #-Ouverture du fichier JSON contenant la liste des machines,
+        devices = json.load(tf)                 #-Chargement du contenu du fichier dans une variable pour l'afficher.
         print("Récupération des machines et de leurs fichiers de connexion.\nLes machines enregistrées sont:", devices,"\n")
-     except (FileNotFoundError, NameError) as error:  #Retour
-        logging.warning(error) 
+     except (FileNotFoundError, NameError) as error:  	#En cas d'erreur:
+        logging.warning(error) 				#Redirection des erreurs possibles dans le fichier log, affichage d'un averissement.
         print("\nLes variables globales n'existent pas dans l'exécution actuelle du script...\nAucunes machines et fichiers de connexion enregistrés.\nRetour au menu précédent....")
         get_infos()
                                     
      global  device_name
      try:
         device_name = input('\nIndiquez le nom des machine à configurer séparé par un tiret\nExemple: switch1-switch3\nRéponse: >>>>>')
-        device = device_name + "_connexion.json"; device = device.replace('-', '_connexion.json-')
-        device = device.split("-") 
+        device = device.split("-")  
         devices_config = []                       #Création d'une liste contenant toutes les infos de connexion 
         for device in device:                     #La boucle lance la fonction et permet d'ouvrir des fichier de connexion   
-            tf = open(device, "r")
+            tf = open(device, "r") 
             use_json(file_json = device, data =1) #des machines indiquées par l'utilisateur. A chaque tour de boucle,
             devices_config.append(r_data)         #les donneés de connexions sont ajoutées à la liste principale devices_config.   
      except (FileNotFoundError, NameError) as error:
