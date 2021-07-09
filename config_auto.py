@@ -44,7 +44,7 @@ def get_infos():
         if int(nbresw_answer) > 1 and len(list_devices) >= 1  :  #Si il n'y a q'une machine, le message n'est pas affiché.
             print("\nEnregistrement informations de la machine suivante\n")
 
-        global device_name               #Déclaration en variable global afin de pouvoir l'utiliser hors de la fonction. 
+                      #Déclaration en variable global afin de pouvoir l'utiliser hors de la fonction. 
         device_name = input("""\nIndiquez le nom de la machine: >>>>>""") 				    #Les des données néccessaire
         list_devices.append(device_name)       #Ajout du nom de l'appareil à chaque tour de boucle	    # à la connexion distante des machines
         answer_ip = input("""\nIndiquez l\'addresse IP de l\'équipement sans son masque: >>>>>""")	    # sont déclarées dans les variables,   
@@ -105,7 +105,7 @@ def get_config():
         print("\nLes variables globales n'existent pas dans l'exécution actuelle du script...\nAucunes machines et fichiers de connexion enregistrés.\nRetour au menu précédent....")
         get_infos()
                                     
-     global  device_name
+     
      try:					#Test des instructions qui suivent.
         device_name = input('\nIndiquez le nom des machine à configurer séparé par un tiret\nExemple: switch1-switch3\nRéponse: >>>>>')
         device = device_name + "_connexion.json"; device = device.replace('-', '_connexion.json-') #Modification de la chaîne de caractère
