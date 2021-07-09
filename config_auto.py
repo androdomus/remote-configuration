@@ -106,148 +106,149 @@ def get_config():
         get_infos()
                                     
      global  device_name
-     try:
+     try:					#Test des instructions qui suivent.
         device_name = input('\nIndiquez le nom des machine à configurer séparé par un tiret\nExemple: switch1-switch3\nRéponse: >>>>>')
-        device = device.split("-")  
-        devices_config = []                       #Création d'une liste contenant toutes les infos de connexion 
-        for device in device:                     #La boucle lance la fonction et permet d'ouvrir des fichier de connexion   
-            tf = open(device, "r") 
-            use_json(file_json = device, data =1) #des machines indiquées par l'utilisateur. A chaque tour de boucle,
-            devices_config.append(r_data)         #les donneés de connexions sont ajoutées à la liste principale devices_config.   
-     except (FileNotFoundError, NameError) as error:
+        device = device_name + "_connexion.json"; device = device.replace('-', '_connexion.json-') #Modification de la chaîne de caractère
+	device = device.split("-")  		  #Transformation de la variable en liste pour récupéré le(s) fichier(s) de connexion.
+        devices_config = []                       #Création d'une liste (vide) qui contiendra toutes les infos de connexion. 
+        for device in device:                     	#La boucle effectue les  instructions suivantes pour chaque objet de la liste:    
+            tf = open(device, "r") 		  	#-Ouverture des fichier de connexion des machines indiquées par l'utilisateur
+            use_json(file_json = device, data =1) 	#-Chargement dans la variable des infos de connexion.
+            devices_config.append(r_data)         	#-Ajout des donneés de connexions à la liste devices_config.   
+     except (FileNotFoundError, NameError) as error:			#Redirections des erreurs dans le fichier log relancement de la fonction.
         logging.warning(error) 
         print('\nLe(s)équipement(s) est/sont incorect(s):(plusieurs raisons possibles)\n-Ils ne sont pas séparés par un tiret.\n-Ils ne font pas partie des équipements configuré\nRetour au menu des configurations...')
         get_config()
      
-     global user_config
+     global user_config  		 #Transformation en variable globale de la réponse de l'utilisateur au menu de configuration. 
      user_config = input("\n-Configuration de VlANS: Tapez 1\n-Configuration d\'interface: Tapez 2\n-Configuration par fichier: Tapez 3\n-Retour à l'enregistrement des équipements: Tapez 4\n>>>>> Réponse:")
 
      if user_config == "1":
-        all_vl_cmd =[]   #Création en variable d'une liste vide de toutes les configurations de vlan
-        nbr_config = input('\n-Nombre de vlan à configurer: >>>>>')
-        i = int(nbr_config) 
+        all_vl_cmd =[]   			#Création d'une liste (vide) qui contiendra toutes les configurations de vlan
+        nbr_config = input('\n-Nombre de vlan à configurer: >>>>>') 
+        i = int(nbr_config) 			#Changement du type de la variable en nombre entier
 
-        for i in range(i):  #Boucle récupérant à chaque tour les données des variables vlan
+        for i in range(i):  			#Récupération à chaque tour (tour en fonction de nbre_config) des données des variables vlan
             vlan_nbr = input('\nAjouter le numéro du VlAN: >>>>>>')
             vlan_name = input('\nIndiquez le nom du VlAN: >>>>>>')    
             vlan_ip = input('\nIndiquez l\' addresse du VlAN avec son masque en annotation décimale: >>>>>')
        
             i = len(nbr_config)
-            for i in range(0, i):  #La boucle crée à chaque tour une liste des commande                 
-                model_vlan = ["vl ", "name ", "int vl ", "ip add ", "do wr"]
-                             
-                model_vlan[0] = model_vlan[0] + vlan_nbr  #Création de la liste des configurations config_command, 
+            for i in range(0, i):  	#Création à chaque tour d'une liste des commande.                 
+                model_vlan = ["vl ", "name ", "int vl ", "ip add ", "do wr"] #Création d'une liste de commandes basiques utilisées 
+                             						     # pour créer un VLAN sur un switch CISCO
+                model_vlan[0] = model_vlan[0] + vlan_nbr   #Création de la liste des configurations config_command, 
                 model_vlan[1] = model_vlan[1] + vlan_name  #en ajoutant les données des variable vlan,
-                model_vlan[2] = model_vlan[2] + vlan_nbr   # aux chaînes de caractère de la list de configuration 
-                model_vlan[3] = model_vlan[3] + vlan_ip    #basique(model_vlan) et selon leurs emplacements dans la liste. 
+                model_vlan[2] = model_vlan[2] + vlan_nbr   # aux chaînes de caractère de la liste de commandes 
+                model_vlan[3] = model_vlan[3] + vlan_ip    #basique(model_vlan) en fonction de  leurs emplacements dans la liste. 
                 config_command = model_vlan
 
-                all_vl_cmd.append(config_command) #Chaque liste de commande est rajoutée à liste principale 
+                all_vl_cmd.append(config_command) #Chaque liste de commande est rajoutée à liste principale. 
                 print(all_vl_cmd)
 
-        for device in devices_config:           #Pour chaque fichiers de connexion contenu dans la liste,
-            connexion(r_data = device)          #lance la fonction de connexion SSH
-            for config_command in all_vl_cmd:   #et pour chaque liste de commande contenu dans la liste
-                    send_config(config_command) #lance la fonction d'envoi de commande sur la machine.             
+        for device in devices_config:           #Pour chaque fichiers de connexion contenu dans la liste devices_config:
+            connexion(r_data = device)          #-Lancement de la fonction de connexion SSH
+            for config_command in all_vl_cmd:   	#Pour chaque liste de commande contenu dans la liste all_vl_cmd:
+                    send_config(config_command) 	#-Lancement la fonction d'envoi de commande sur la(es) machine(s) distante(s).             
         print('Retour au menu principal')
-        choice_menu()
+        choice_menu()				
                         
      elif user_config == "2":
-        all_int_cmd = []
+        all_int_cmd = []				#Création d'une liste (vide) qui contiendra toutes les configurations d'interfaces
         nbr_rg = input('\nNombre de range à configurer: >>>>>>')
-        i = int(nbr_rg) 
+        i = int(nbr_rg) 				#Changement du type de la variable en nombre entier
 
-        for i in range(i):
+        for i in range(i):		#Récupération à chaque tour (tour en fonction de nbre_rg) des données des variables d'interfaces
             int_mod = input('\nIndiquez le mode du range:\nAccess tapez 1\nTrunk tapez 2\nRéponse: >>>>>>')            
             int_rg = input('\nIndiquez le type d\'interface, son  l\'interface ou le range (exemple fa0/1-24 - gi0/1,): >>>>>> ')
             int_vl = input('\nIndiquez le(s) VlAN(s) autorisé(s) selon le mode défine (exemple mode access 3 mode trunk 4-8): >>>>>>\n')
                    
             i = len(nbr_rg)
-            for i in range(0, i): #La boucle crée à chaque tour une liste des commande  
+            for i in range(0, i): 		#Création à chaque tour d'une liste des commande.  
                
-                model_access = ["int range ", "swit mod acc  ", "swit acc vl ", "do wr"]
-                model_trunk = ["int range ", "swi tr enc do  ", "switch mod tr", "swit tr all vl ", "do wr"]
-        
+                model_access = ["int range ", "swit mod acc  ", "swit acc vl ", "do wr"]  #Création de deux liste de commandes basiques utilisées
+                model_trunk = ["int range ", "swi tr enc do  ", "switch mod tr", "swit tr all vl ", "do wr"] #pour configurer les différents modes  
+        												     #des interfaces sur un switch CISCO.
                 if int_mod == "1":                             
                     model_access[0] = model_access[0] + int_rg      
                     model_access[2] = model_access[2] + int_vl                                                
-                    config_command = model_access                   #Selon le choix de l'utilisateur (variable int_mod)
-                                                                    #Création de la liste des configurations config_command, 
-                elif int_mod == "2":                                #en ajoutant les données des variable interfaces,
-                    model_trunk[0] = model_trunk[0] + int_rg        #aux chaînes de caractère de la list de configuration basique 
-                    model_trunk[3] = model_trunk[3] + int_vl        #(model_access ou mode_trunk) et selon leurs emplacements dans la liste
+                    config_command = model_access                #Selon le choix de l'utilisateur (variable int_mod):
+                                                                 #-Création de la liste des configurations config_command, 
+                elif int_mod == "2":                             #-Ajout des données des variable interfaces,
+                    model_trunk[0] = model_trunk[0] + int_rg     #aux chaînes de caractère de la liste de commande basique 
+                    model_trunk[3] = model_trunk[3] + int_vl     #(model_access ou mode_trunk)en fonction de  leurs emplacements dans la liste
                     config_command = model_trunk
                      
-                all_int_cmd.append(config_command)                     #Chaque liste de commande est rajoutée à liste principale 
+                all_int_cmd.append(config_command)                  #Chaque liste de commande est rajoutée à liste principale 
                 print(all_int_cmd)
 
-        for device in devices_config:                   #Pour chaque fichiers de connexion contenu dans la liste,
-            connexion(r_data = device)                  #lance la fonction de connexion SSH
-            for config_command in all_int_cmd:          #et pour chaque liste de commande contenu dans la liste   
-                send_config(config_command)             #lance la fonction d'envoi de commande sur la machine.    
+        for device in devices_config:          #Pour chaque fichiers de connexion contenu dans la liste devices_config:
+            connexion(r_data = device)         #-Lancement la fonction de connexion SSH.
+            for config_command in all_int_cmd:          #Pour chaque liste de commande contenu dans la liste:   
+                send_config(config_command)             #Lancement de la fonction d'envoi de commande sur la(es) machine(s) distante(s).    
         print('Retour au menu principal')
         choice_menu()
 
      elif user_config == "3":
-        fichier_txt = input('\nIndiquez le fichier contenant la configuration à appliquer: >>>>')
-        for device in devices_config:
-            connexion(r_data = device)
-            send_config(config_command = fichier_txt)
+        fichier_txt = input('\nIndiquez le fichier contenant la configuration à appliquer: >>>>')  #Nom du fichier contenant les commandes 
+        for device in devices_config:			#Pour chaque fichiers de connexion contenu dans la liste devices_config:
+            connexion(r_data = device)			#-Lancement la fonction de connexion SSH.
+            send_config(config_command = fichier_txt)	#Lancement de la fonction d'envoi de commande sur la(es) machine(s) distante(s).
         print('Retour au menu principal')
         choice_menu()
            
      elif user_config == "4":
         print ('\nRetour au menu Enregistrement des machines... \n')
         get_infos()
-     else:
-        print('\nLa réponse ne fait pas partie des proposition.\nRetour au menu des configurations.')
-        get_config()
+     else:						#Si la réponses utilsateur ne correspond à aucunes des possibilités:
+        print('\nLa réponse ne fait pas partie des proposition.\nRetour au menu des configurations.') #Affichage de l'avertissement.
+        get_config()					#Retour au menu de configuration.
                 
 def use_json(file_json, data):      ##Fonction permettant la création, la lecture, l'écriture de fichiers au format
                                     ##JSON. Les types de données (entier-boléeen-string-ect...) et la forme sous laquelles
                                     ##elles sont insérées (dictionnaires-listes-ect...)sont utilisables partout dans le script
                                     ##Cette fonction dépend du module JSON qui doit être importé en amont."""
-    global r_data
-    try:
-        tf = open(file_json, "r")       #Test l'ouvertue d'un fichier dont le nom est le contenu de la variable file_json
-        r_data = json.load(tf)
-    except FileNotFoundError:           #Poursuit le script malgré l'erreur en créeant le fichier dont le nom est le contenu
-        tf = open(file_json, "w")       #dans la variable.
-        json.dump(data,tf)              #Les données contenu dans la variable data sont écrite sur le fichier. 
+    global r_data				#Permet son utilisation dans toutes les fonctions
+    try:						#Test les instructions suivantes:
+        tf = open(file_json, "r")       		#-Lecture du fichier contenu de la variable file_json
+        r_data = json.load(tf)				#-Chargement des données lues dans la variable globale r-data 
+    except FileNotFoundError:           #En cas d'erreur des instructions précédentes:
+        tf = open(file_json, "w")       #-Création du fichier contenu de la variable file_json.
+        json.dump(data,tf)              #-Ecriture des données contenu dans la variable data, sur le fichier. 
         tf.close()                      #
-        tf = open(file_json, "r")       #Après fermeture du fichier ce dernier est ouvert en lecture pour chargé les données
-                           #dans une variable qui est déclarée en globale pour être utilisé hors de la fonction.
-        r_data = json.load(tf)
+        tf = open(file_json, "r")       #-Après fermeture du fichier, ouverture du fichier en mode (lecture)
+                           
+        r_data = json.load(tf)		#-Chargement des données lues dans la variable globale r-data 
 
 def connexion(r_data):   
                             ##Fonction permettant la connexion en SSH aux machines pour lesquelles
-                            ##les données neccessaires à la connexion ont été envoyées en paramètre.
-                            ##Cette fonction dépend du module Netmiko qui doit re importé en amont                      
+                            ##les données neccessaires à la connexion ont été envoyées en paramètres.
+                            ##Cette fonction dépend du module Netmiko qui doit être importé en amont.                      
     global net_connect
-    try:            #Après Déclariation de la variable global net_connect test des instructions de la fonction.
+    try:            #Après Déclariation de la variable global net_connect test des instructions qui suivent.
         print('################ Connexion SSH en cours ################') 
-        net_connect = ConnectHandler(**r_data)  #Déclaration de la variable dont le contenu est une fonction du module Netmiko 
-        print(net_connect.find_prompt())        #permettant via un dictionnaire passé en paramètre la connexion SSH à la machine,
-                                                #ainsi que d'autres actions comme l'affichage du prompt ou l'envoi de commande.
+        net_connect = ConnectHandler(**r_data)  #Déclaration de la variable exécutant une fonction du module Netmiko.
+        print(net_connect.find_prompt())        #La variable globale r_data passée en paramètre permet la connexion SSH à la machine.
+                                                #D'autres actions comme l'affichage du prompt ou l'envoi de commande sont possibles.
         print('-------------------- Connexion établie --------------------')
     except (NetmikoTimeoutException, SSHException, NameError) as error: #Les erreurs de connexions sont affichées ainsi qu'un message,
-        logging.warning(error)                                                    #avant le renvoi au menu principal.
+        logging.warning(error)                                          #avant le renvoi au menu principal.
         print("Connexion impossible:(plusieurs raisons possibles)\n-Vérifiez vos informations de connexion.\nConnexion trop longue à établir.\nRetour à l'enregistrement des informations.\n")
         choice_menu()
     
-def send_config(config_command):        ##Fonction permettant l'envoi de configuration à la machine.
-    try:
-        net_connect.enable()           #Autorise le mode privilège de la machine.
-        net_connect.find_prompt()      #Affiche le prompt.
-        if user_config == "1" or user_config == "2":
-            output = net_connect.send_config_set(config_command)
+def send_config(config_command):        ##Fonction permettant l'envoi de configuration à la machine. Dépend du module Netmiko.
+    try:								#Test des instructions suivantes:
+        net_connect.enable()           					#-Autorisation du mode privilège de la machine.
+        net_connect.find_prompt()      					#-Affichage du prompt.
+        if user_config == "1" or user_config == "2":			#Selon l'option choisi, utilisation de:
+            output = net_connect.send_config_set(config_command)	#-La fonction de configuration par liste du module Netmiko.
         elif user_config == "3":
-            output = net_connect.send_config_from_file(config_command)
-        print(output)
+            output = net_connect.send_config_from_file(config_command)	#-La fonction de configuration par fichier texte du module Netmiko.
+        print(output)							#-Affichage des commandes envoyées.
         print('\n\n---------------- Configuration terminée -----------------\n \n')
-    except (NetmikoTimeoutException, SSHException, NameError, FileNotFoundError) as error:   #Les erreurs de connexions sont affichées ainsi qu'un message,
-        logging.warning(error)                                                       #avant le renvoi au menu de configuration.
-        print ('Une erreur s\'est produite. Vérifiez le fichier log ligne...Retour au menu de Configuration...')
+    except (NetmikoTimeoutException, SSHException, NameError, FileNotFoundError) as error:   #Si erreurs de connexion, affichage d'un message,
+        logging.warning(error)                                                       	     #avant le renvoi au menu de configuration.
+        print ('Une erreur s\'est produite. Vérifiez le fichier log...\nRetour au menu de Configuration...')
     
 def choice_menu():          ##Fonction permettant le choix entre les différentes actions à effectuer. 
     
@@ -257,8 +258,8 @@ def choice_menu():          ##Fonction permettant le choix entre les différente
     Quitter le script: Tapez 3
     Réponse: >>>>>""")
                                    #Enregistre le choix d'action à effectuer par le contenu de la variable.
-    if devices_exist == "1":        #Exécute la fonction d'enregistrement suivie de la 
-        get_infos()                 #fonction de configuration si la variable contient 1.
+    if devices_exist == "1":       #Exécute la fonction d'enregistrement,  
+        get_infos()                #suivie de la fonction de configuration si la variable contient 1.
         get_config()
 
     elif devices_exist == "2":      #Exécute la fonction de configuration si la variable contient 2.    
@@ -267,12 +268,12 @@ def choice_menu():          ##Fonction permettant le choix entre les différente
     elif devices_exist == "3":      #Affiche le message et quitte le script si la variable contient 3.        
         print('\nFermeture du script\n-----------------------------\n')
       
-    else :
+    else :			    #Renvoie au menu pricipal si aucun des choix précédents est indiqué.
         print('\nLa réponse ne fait pas partie des choix proposés... \nRetour au menu principal...\n\n\n')
         choice_menu()    
-try:
-    choice_menu()      #Exécute le script via cette fonction.                 
-except (NameError, ModuleNotFoundError) as error:
-    logging.warning(error)  #avant le renvoi au menu de configuration.
+try:				  			#Test les instructions suivantes:
+    choice_menu()     					#Lancement du script via cette fonction.                 
+except (NameError, ModuleNotFoundError) as error:	#En cas d'erreur au lancement du script         
+    logging.warning(error) 		  		#Redirection de l'erreur vers le fichier de log, affichage d'un message d'avertissement
     print ('\nModule(s) neccessaires non installés.\nVoir le fichier de log "config_auto_device.log".')
     print('Pour installer le module manquant, exécuter la commande suivante: pip install "nom-du-module')
