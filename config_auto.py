@@ -59,6 +59,7 @@ def get_infos():
         answer_username = input("""\nIndiquez le nom de l\'utilisateur: >>>>>""")			    #par l'intéractivité entre le script	
         print("""\nIndiquez le mot de passe pour la connexion SSH ainsi que celui du mode privilégié:""",)  #et l'utilisateur.
         answer_mdp = getpass() #Cache le mot de passe indiqué par l'utilisateur
+	answer_type = input('\nIndiquez le modèle en tapant:cisco_ios ou linux: >>>>>') #Modéle de l'équipement à configurer
 	
         file_json = device_name + "_connexion.json"       #Variable distinguant les machines afin de creer leur fichier JSON de connexion. 
         device_dictionnary = device_name + "_dictionnary" #Variable distinguant les dictionnaires regroupant les données des machines.
@@ -69,7 +70,7 @@ def get_infos():
         "username": answer_username,
         "password": getpass(),
         "secret": answer_mdp,
-        "device_type": "cisco_ios",
+        "device_type": answer_type,
         }
         try:
             net_connect = ConnectHandler(**device_dictionnary)  #Teste si la connexion en SSH est possible.
