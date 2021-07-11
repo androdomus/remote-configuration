@@ -7,7 +7,7 @@
 #####################################################################################################################                                                                                                                          
 ##Auteur:   Laurent Nero                                                                                           ##                                  
 ##Version:      1                                                                                                  ##
-##Date:     11/07/2021
+##Date:     11/07/2021												   ##
 #####################################################################################################################
 ##                                                 Description                                                     ##
 #####################################################################################################################                                                                                                                 ##                                                               
@@ -112,8 +112,7 @@ def get_config():
         logging.warning(error) 				#Redirection des erreurs possibles dans le fichier log, affichage d'un averissement.
         print("\nLes variables globales n'existent pas dans l'exécution actuelle du script...\nAucunes machines et fichiers de connexion enregistrés.\nRetour au menu précédent....")
         get_infos()
-                                    
-     
+                                         
      try:					#Test des instructions qui suivent.
         device_name = input('\nIndiquez le nom des machine à configurer séparé par un tiret\nExemple: switch1-switch3\nRéponse: >>>>>')
         device = device_name + "_connexion.json"            #Transformation du contenu de la variable device_name:
