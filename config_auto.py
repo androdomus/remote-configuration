@@ -1,19 +1,27 @@
-##Ce programme a pour finalité  l'automatisation des tâches répétitives###
-### effectué lors de la configuration d'un équipement réseau
-
+#!/usr/bin/python
 # -*- coding: utf8 -*-
+#####################################################################################################################
+##                                                                                                                 ##
+##                                                 config_auto.py                                                  ##                                
+##                                                                                                                 ##                                                                                      
+#####################################################################################################################                                                                                                                          
+##Auteur:   Laurent Nero                                                                                           ##                                  
+##Version:      1                                                                                                  ##
+##Date:     11/07/2021
+#####################################################################################################################
+##                                                 Description                                                     ##
+#####################################################################################################################                                                                                                                 ##                                                               
+##Ce script peut être utilisé pour la  conception, la configuration et l'administration de réseau informatique.    ##
+##Les informations de configurations sont collectées puis envoyée sur les équipements (switch-routeur-serveur)     ##
+##après initialisation de la connexion distante.                                                                   ##
+#####################################################################################################################
 
-#Chargement des librairies neccéssaire à l'exécution du script
+#Importation des librairies et fonctions incluses, neccéssaires à l'exécution du script
 from netmiko import (ConnectHandler, NetmikoTimeoutException) #Permet la connexion en SSH aux appareil
 from paramiko.ssh_exception import SSHException
 from getpass import getpass
 import json #Permet le chargement lal lecture et l'écriture de donnée à l'intérieur et à l'extérieur du script
 import logging
-
-print ('\n\n####################SCRIPT PARAMETRAGE RESEAU#################\n\n') 
-
-logging.basicConfig(filename='config_auto_device.log', filemode='w', level=logging.WARNING,\
-format='%(asctime)s -- %(lineno)d -- %(funcName)s -- %(levelname)s -- %(message)s')
     
 def get_infos():
                     ##Fonction permettant par l'intéractivité la collecte de données néccéssaires à 
@@ -37,7 +45,7 @@ def get_infos():
         i = int(nbresw_answer)          #Test si la réponse déclarée en variable est un chiffre.
     except (ValueError) as error:
         logging.warning(error) 		#Envoi de l'erreur dans le fichier de log.
-        print('Valeur incorrecte...Indiquez un nombre entier.\nRetour au menu d\'Enregistrement\n') #Affiche le message.    
+        print('Valeur incorrecte...Indiquez un nombre entier.\nRetour à la 1ère Partie\n') #Affiche le message.    
         get_infos()			#Relance la fonction 	
         
     for i in range(0,i):                #La boucle délimitée par la variable nbresw_answer enregistre les machines dans une liste.
@@ -108,8 +116,9 @@ def get_config():
      
      try:					#Test des instructions qui suivent.
         device_name = input('\nIndiquez le nom des machine à configurer séparé par un tiret\nExemple: switch1-switch3\nRéponse: >>>>>')
-        device = device_name + "_connexion.json"; device = device.replace('-', '_connexion.json-') #Modification de la chaîne de caractère
-	device = device.split("-")  		  #Transformation de la variable en liste pour récupéré le(s) fichier(s) de connexion.
+        device = device_name + "_connexion.json"            #Transformation du contenu de la variable device_name:
+        device = device.replace('-', '_connexion.json-')    #-Modification de l'intérieur et de la finde la chaîne de caractère.
+        device = device.split("-")                          #-Chande du type en liste pour récupéré le(s) fichier(s) de connexion.
         devices_config = []                       #Création d'une liste (vide) qui contiendra toutes les infos de connexion. 
         for device in device:                     	#La boucle effectue les  instructions suivantes pour chaque objet de la liste:    
             tf = open(device, "r") 		  	#-Ouverture des fichier de connexion des machines indiquées par l'utilisateur
@@ -248,15 +257,11 @@ def send_config(config_command):        ##Fonction permettant l'envoi de configu
         print('\n\n---------------- Configuration terminée -----------------\n \n')
     except (NetmikoTimeoutException, SSHException, NameError, FileNotFoundError) as error:   #Si erreurs de connexion, affichage d'un message,
         logging.warning(error)                                                       	     #avant le renvoi au menu de configuration.
-        print ('Une erreur s\'est produite. Vérifiez le fichier log...\nRetour au menu de Configuration...')
+        print ('Une erreur s\'est produite.Verifiez que le nom du fichier de configuration est correcte...\nVoir le fichier de log config_auto.py...')
     
 def choice_menu():          ##Fonction permettant le choix entre les différentes actions à effectuer. 
-    
-    devices_exist = input("""Quelle est l\'action à effectuer?\n
-    Enregistrement un nouvel appareil: Tapez 1 
-    Congiguration d'un appareil connu: Tapez 2
-    Quitter le script: Tapez 3
-    Réponse: >>>>>""")
+    print ('\n\n#################### CONFIGURATION RESEAU ####################\n\n') 
+    devices_exist = input("""Quelle est l\'action à effectuer?\nEnregistrer une machine: Tapez 1\nCongigurer une machine: Tapez 2\nQuitter le script: Tapez 3\nRéponse: >>>>>""")    
                                    #Enregistre le choix d'action à effectuer par le contenu de la variable.
     if devices_exist == "1":       #Exécute la fonction d'enregistrement,  
         get_infos()                #suivie de la fonction de configuration si la variable contient 1.
@@ -270,10 +275,20 @@ def choice_menu():          ##Fonction permettant le choix entre les différente
       
     else :			    #Renvoie au menu pricipal si aucun des choix précédents est indiqué.
         print('\nLa réponse ne fait pas partie des choix proposés... \nRetour au menu principal...\n\n\n')
-        choice_menu()    
-try:				  			#Test les instructions suivantes:
-    choice_menu()     					#Lancement du script via cette fonction.                 
-except (NameError, ModuleNotFoundError) as error:	#En cas d'erreur au lancement du script         
-    logging.warning(error) 		  		#Redirection de l'erreur vers le fichier de log, affichage d'un message d'avertissement
-    print ('\nModule(s) neccessaires non installés.\nVoir le fichier de log "config_auto_device.log".')
-    print('Pour installer le module manquant, exécuter la commande suivante: pip install "nom-du-module')
+        choice_menu()
+
+def main(): 
+                            ##Fonction principal exécutant le script et génère le fichier de log,
+                            ##où sont contenu les informations sur les erreurs.
+    logging.basicConfig(filename='config_auto_device.log', filemode='w', level=logging.WARNING,\
+    format='%(asctime)s -- %(lineno)d -- %(funcName)s -- %(levelname)s -- %(message)s')
+
+    try:                            #Test les instructions suivantes:
+        choice_menu()               #-Lancement de la fonction.                 
+    except (NameError, ModuleNotFoundError) as error:     #En cas d'erreur au lancement du script:         
+        logging.warning(error)                            #-Redirection de l'erreur vers le fichier de log. 
+        print ('\nModule(s) neccessaires non installés.') #-Affichage d'un message d'avertissement.
+        print('\nVoir le fichier de log "config_auto_device.log".Pour installer le module manquant, exécuter la commande suivante: pip install "nom-du-module')
+
+if __name__ == '__main__':          #Différencie l'exécution de l'import du script en globalité 
+    main()                          #Execution du script.
