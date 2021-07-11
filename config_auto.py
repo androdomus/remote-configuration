@@ -280,7 +280,7 @@ def choice_menu():          ##Fonction permettant le choix entre les différente
 def main(): 
                             ##Fonction principal exécutant le script et génère le fichier de log,
                             ##où sont contenu les informations sur les erreurs.
-    logging.basicConfig(filename='config_auto_device.log', filemode='w', level=logging.WARNING,\
+    logging.basicConfig(filename='config_auto.log', filemode='w', level=logging.WARNING,\
     format='%(asctime)s -- %(lineno)d -- %(funcName)s -- %(levelname)s -- %(message)s')
 
     try:                            #Test les instructions suivantes:
