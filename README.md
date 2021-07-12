@@ -46,7 +46,7 @@ Pour que le script s'exécute correctement, vérifiez que vous disposez de tous 
 ### Prérequis Machine distante (équipement réseau à configurer) 
 * Accès SSH activé et configuré sur le switch. Voir la configuration [ici](https://github.com/androdomus/remote-configuration/blob/master/Pr%C3%A9requis%20switch.md#exemple-de-configuration-ssh-dun-switch-avant-de-pouvoir-ex%C3%A9cuter-le-script)   
 * Communication fonctionnelle avec la machine hôte.  
-* Vlan d'adminstration configuré pour pouvoir accédé à tous les switch. Voir la configuration [ici](https://github.com/androdomus/remote-configuration/blob/master/Pr%C3%A9requis%20switch.md#exemple-de-configuration-dacc%C3%A8s-vlan-dun-switch-avant-de-pouvoir-ex%C3%A9cuter-le-script)  
+* Un VLAN dédié à l'accès en SSH sur tous les switch. Voir la configuration [ici](https://github.com/androdomus/remote-configuration/blob/master/Pr%C3%A9requis%20switch.md#exemple-de-configuration-dacc%C3%A8s-vlan-dun-switch-avant-de-pouvoir-ex%C3%A9cuter-le-script)  
 
 
 ----------------------------------------------------------------
@@ -64,7 +64,8 @@ L'utilisateur est guidé vers un deuxième menu, à travers lequel il donne les 
 Les informations demandées peuvent être indiquées de manière répétées. Il est alors possible d'effectuer plusieurs configurations sur plusieurs équipements en même temps.
 Chaque configuration est enregistrée,puis appliquée les unes à la suite des autres sur toutes les machines distantes.
 
-Il existe un autre mode de configuration. Avant l'exécution du script, l'utilisateur crée un fichier texte dans le **même dossier** que le script.A l'interieur de ce fichier texte, il indique la configuration à envoyer comme il le ferait  sur l'interface de commande de  l'appareil (**CLI**).  
+Il existe un autre mode de configuration. Avant l'exécution du script, l'utilisateur crée un fichier texte dans le **même dossier** que le script.  
+A l'interieur de ce fichier texte, il indique la configuration à envoyer comme il le ferait  sur l'interface de commande de  l'appareil (**CLI**).  
 Lors de l'exécution du script, il faudra quand lui sera fait la demande, donner  **le nom complet du fichier texte** (nom-du-fichier.txt).  
 Voir un exemple [ici](https://github.com/androdomus/remote-configuration/blob/master/base_config.txt) d'un fichier texte de configuration.
 
@@ -73,7 +74,7 @@ Voir un exemple [ici](https://github.com/androdomus/remote-configuration/blob/ma
 Les réponses de l'utilisateur, non attendues et prévues lors de la conception du programme, sont interprétées comme des **erreurs**.  
 L'utilisateur est renvoyé au menu dans lequel il devra répéter sa réponse ou, le cas échéant à un autre menu où il pourra résoudre son erreur. 
 Si l'erreur concerne un module non installé, le script se ferme.
-Le fichier de log nommé **auto_config.log** est généré et les informations sur les erreurs y sont indiqué afin de pouvoir les résoudre.   
+Le fichier de log nommé **config_auto.log** est généré et les informations sur les erreurs y sont indiqué afin de pouvoir les résoudre.   
 Voir la composition d'une ligne dans le fichier log [ici](https://github.com/androdomus/remote-configuration/new/master#fichier-log-g%C3%A9n%C3%A9r%C3%A9-par-le-script)
 
 -----------------------------------------------------------------
