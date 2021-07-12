@@ -58,7 +58,8 @@ def get_infos():
         answer_ip = input("""\nIndiquez l\'addresse IP de l\'équipement sans son masque: >>>>>""")	    # sont déclarées dans les variables,   
         answer_username = input("""\nIndiquez le nom de l\'utilisateur: >>>>>""")			    #par l'intéractivité entre le script	
         print("""\nIndiquez le mot de passe pour la connexion SSH ainsi que celui du mode privilégié:""",)  #et l'utilisateur.
-        answer_mdp = getpass() #Cache le mot de passe indiqué par l'utilisateur
+        answer_mdp = getpass() #Cache le mot de passe indiqué par l'utilisateur.
+	answer_mdp_enable = getpass() #Cache le mot de passe du mode privilégié de la CLI de la machine distante.
 	
         file_json = device_name + "_connexion.json"       #Variable distinguant les machines afin de creer leur fichier JSON de connexion. 
         device_dictionnary = device_name + "_dictionnary" #Variable distinguant les dictionnaires regroupant les données des machines.
@@ -67,8 +68,8 @@ def get_infos():
         device_dictionnary = {
         "host": answer_ip,
         "username": answer_username,
-        "password": getpass(),
-        "secret": answer_mdp,
+        "password": answer_mdp,
+        "secret": answer_mdp_enable,
         "device_type": "cisco_ios",
         }
         try:
