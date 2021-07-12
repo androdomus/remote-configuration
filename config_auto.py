@@ -155,7 +155,7 @@ def get_config():
                     config_command = model_vlan
 
                     all_vl_cmd.append(config_command) #Chaque liste de commande est rajoutée à liste principale. 
-                    print("Récapitulatif des configurations à envoyer:\n"all_vl_cmd)
+                    print("Récapitulatif des configurations à envoyer:\n", all_vl_cmd)
 
             for device in devices_config:           #Pour chaque fichiers de connexion contenu dans la liste devices_config:
                 connexion(r_data = device)          #-Lancement de la fonction de connexion SSH
@@ -201,7 +201,7 @@ def get_config():
                         get_config() 
                                     
                     all_int_cmd.append(config_command)                  #Chaque liste de commande est rajoutée à liste principale 
-                    print("Récapitulatif des configurations à envoyer:\n"all_int_cmd)
+                    print("Récapitulatif des configurations à envoyer:\n", all_int_cmd)
 
             for device in devices_config:          #Pour chaque fichiers de connexion contenu dans la liste devices_config:
                 connexion(r_data = device)         #-Lancement la fonction de connexion SSH.
