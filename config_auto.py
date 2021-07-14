@@ -154,13 +154,8 @@ def get_config():
                     model_vlan[3] = model_vlan[3] + vlan_ip    #basique(model_vlan) en fonction de leurs emplacements dans la liste. 
                     config_command = model_vlan
 
-<<<<<<< HEAD
                 all_vl_cmd.append(config_command) #Chaque liste de commande est rajoutée à liste principale. 
                 print("Récapitulatif des configurations à envoyer:\n", all_vl_cmd)
-=======
-                    all_vl_cmd.append(config_command) #Chaque liste de commande est rajoutée à liste principale. 
-                    print("Récapitulatif des configurations à envoyer:\n", all_vl_cmd)
->>>>>>> 2b5c54b0cfbfcf564b47bd881758a600243860e3
 
             for device in devices_config:           #Pour chaque fichiers de connexion contenu dans la liste devices_config:
                 connexion(r_data = device)          #-Lancement de la fonction de connexion SSH
@@ -205,13 +200,8 @@ def get_config():
                         print('Le mode de configuration choisi est incorecte...\nRetour au choix de configuration...')
                         get_config() 
                                     
-<<<<<<< HEAD
                 all_int_cmd.append(config_command)                  #Chaque liste de commande est rajoutée à liste principale 
                 print("Récapitulatif des configurations à envoyer:\n", all_int_cmd)
-=======
-                    all_int_cmd.append(config_command)                  #Chaque liste de commande est rajoutée à liste principale 
-                    print("Récapitulatif des configurations à envoyer:\n", all_int_cmd)
->>>>>>> 2b5c54b0cfbfcf564b47bd881758a600243860e3
 
             for device in devices_config:          #Pour chaque fichiers de connexion contenu dans la liste devices_config:
                 connexion(r_data = device)         #-Lancement la fonction de connexion SSH.
