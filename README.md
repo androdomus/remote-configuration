@@ -90,7 +90,7 @@ Installez le module Netmiko
 `pip install netmiko`
 
 Pour lancer le script déplacez vous dans le fichier **remote-configuration** et lancez la commande suivante.  
-`python3 auto_config.py`
+`python3 config_auto.py`
 
 
 
