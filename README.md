@@ -75,7 +75,7 @@ Les réponses de l'utilisateur, non attendues et prévues lors de la conception 
 L'utilisateur est renvoyé au menu dans lequel il devra répéter sa réponse ou, le cas échéant à un autre menu où il pourra résoudre son erreur. 
 Si l'erreur concerne un module non installé, le script se ferme.
 Le fichier de log nommé **config_auto.log** est généré et les informations sur les erreurs y sont indiqué afin de pouvoir les résoudre.   
-Voir la composition d'une ligne dans le fichier log [ici](https://github.com/androdomus/remote-configuration/new/master#fichier-log-g%C3%A9n%C3%A9r%C3%A9-par-le-script)
+Voir la composition d'une ligne dans le fichier log [ici](https://github.com/androdomus/remote-configuration/blob/master/Description%20fichier_log.md#fichier-log-g%C3%A9n%C3%A9r%C3%A9-par-le-script)
 
 -----------------------------------------------------------------
 
